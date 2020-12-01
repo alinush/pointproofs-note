@@ -1,0 +1,75 @@
+\section{Preliminaries}
+
+\parhead{Notation.}
+Let $\Gr_1, \Gr_2, \Gr_T$ denote groups of prime order $p$.
+Let $[N] = \{1,2,\dots, N\}$.
+Let $\vect{m}=[m_1, m_2, \dots, m_N]$ be a vector of elements, indexed from 1 to $N$.
+Let $\vect{m}^\top$ denote its transpose: a column vector whose $i$th entry is $m_i$.
+Let $\vect{m}[S] = (m_i)_{i \in S}$ be a \textit{subvector} of $\vect{m}$ consisting only of the positions $i\in S$.
+
+\subsection{Discrete Fourier Transform (DFT) on group elements}
+\label{s:dft}
+
+\subsection{Multiplying a Toeplitz matrix by a vector}
+\label{s:toeplitz}
+
+\subsection{Pointproofs}
+\label{s:pointproofs}
+
+Gorbunov et al.~\cite{GRWZ20} enhance the VC by Libert and Yung~\cite{LY10} with the ability to aggregate multiple proofs into a subvector proof.
+Additionally, they also enable aggregation of subvector proofs across different vector commitments, which they show is useful for stateless smart contract validation in cryptocurrencies.
+
+\parhead{Public parameters.}
+Let $e : \Gr_1 \times \Gr_2\rightarrow \Gr_T$~\cite{GPS08} be a Type III pairing (i.e., $\Gr_1\ne \Gr_2$ and there is no efficiently computable homomorphisms between $\Gr_1$ and $\Gr_2$).
+Let $g_1,g_2,g_T$ be generators of $\Gr_1, \Gr_2$ and $\Gr_T$ respectively, which everybody knows.
+The $O(N)$-sized \textit{proving key} used to commit to a vector is:
+\begin{align}
+    \prk = (g_1^{\alpha},\dots, g_1^{\alpha^N}; g_1^{\alpha^{N+2}},\dots, g_1^{\alpha^{2N}})
+\end{align}
+The $O(N)$-sized \textit{verification key} used to verify proofs is:
+\begin{align}
+    \vrk = (g_2^{\alpha},\dots,g_2^{\alpha^N}; g_T^{\alpha^{N+1}})
+\end{align}
+Note that $g_1^{\alpha^{N+1}}$ is ``missing'' from the proving key, which is essential for security.
+%They only support updating commitments, but proofs could be made updatable at the cost of linear-sized update keys.
+
+\parhead{Commitment.}
+A commitment $C$ to a vector $\vect{m}=[m_1,\dots,m_N]$ is:
+\begin{align}
+    C = \prod_{i\in[N]} \left(g_1^{\alpha^i}\right)^{m_i}
+      = g_1^{\sum_{i\in [N]} m_i\alpha^i}
+\end{align}
+The commitment can be computed with $O(N)$ exponentiations.
+
+The $i$th \textit{update key} is $\upk_i=g_1^{\alpha^i}$.
+If any vector element $m_j$ changes to $m_j + \delta$, the commitment can be updated in $O(1)$ time as $c' = c \cdot (\upk_j)^{\delta} = c\cdot (g_1^{\alpha^j})^{\delta}$.
+
+\parhead{Proofs for a $m_i$.}
+A proof for $m_i$ is obtained by re-committing to $v$ so that $m_i$ ``lands'' at position $N+1$ (i.e., has coefficient $\alpha^{N+1}$) rather than ``landing'' at position $i$ (i.e., has coefficient $\alpha^i$).
+Furthermore, this commitment will \textbf{not} contain $m_i$: it cannot, since that would require knowledge of $g_1^{\alpha^{N+1}}$, which is not part of the proving key \prk.
+To get position $i$ to $N+1$, we must ``shift'' it (and every other position) by $(N + 1) - i$.
+Thus, the proof is:
+\begin{align}
+    \label{eq:indiv-proof}
+    \pi_i &= g_1^{\sum_{j\in[N]\setminus\{i\}} m_j \alpha^{j + (N+1) - i}}\\
+    %&= g_1^{\sum_{j\in[N]\setminus\{i\}} m_j \alpha^{j} \alpha^{(N+1) - i}}\\
+    &= \left(g_1^{\sum_{j\in[N]\setminus\{i\}} m_j \alpha^{j}}\right)^{\alpha^{(N+1) - i}}\\
+    &= \left(\frac{g_1^{\sum_{j\in[N]} m_j \alpha^{j}}}{g_1^{m_i \alpha^i}}\right)^{\alpha^{(N+1) - i}}\\
+    &= (C / g_1^{m_i \alpha^i})^{\alpha^{(N+1) - i}}
+\end{align}
+The proof is constant-sized and can be computed with $O(N)$ exponentiations.
+It can be verified in $O(1)$ time using $g_2^{\alpha^{(N+1) - i}}$ from \vrk:
+\begin{align}
+    e(C, g_2^{\alpha^{(N+1)-i}}) \stackrel{?}{=} e(\pi_i, g_2) \cdot g_T^{\alpha^{N+1} m_i}
+\end{align}
+
+\parhead{Other features.}
+Updating proofs is not discussed but can be done in $O(1)$ time, if the $i$th update key $\upk_i$ is tweaked to be $O(N)$-sized rather than constant-sized.
+In addition to computing proofs $\pi_i$ for a single vector element $m_i$, Pointproofs additionally supports computing constant-sized proofs for a \textit{subvector} $\vect{m}[S]$.
+Importantly, Pointproofs supports aggregating many such $\pi_i, i\in S$ into a subvector proof $\pi_S$ $\vect{m}[S]$, as well as \textit{cross-aggregating} multiple subvector proofs $\hat{\pi}_j$ each for a different subvector $\vect{m}_j[S_j]$ and each with respect to a different commitment $C_j$, into a single proof $\pi$.
+We refer the reader to the original paper for details on subvector proofs and (cross)aggregation~\cite{GRWZ20}.
+
+\parhead{Precomputing all proofs.}
+Precomputing all proofs efficiently in Pointproofs is not discussed.
+Naively, it can be done in $O(N^2)$ time by computing each proof $\pi_i$ in $O(N)$ time.
+In \cref{s:pointproofs:precompute-all-proofs}, we show how this can be done in $O(N\log{N})$ time using a Toeplitz matrix multiplication.

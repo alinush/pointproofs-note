@@ -1,0 +1,58 @@
+% https://tex.stackexchange.com/questions/274202/create-a-notation-summary-in-latex
+% https://tex.stackexchange.com/questions/175255/print-glossaries-without-title
+
+\renewcommand{\glossarysection}[2][]{} % prevent title from being displayed
+\setlength{\glsdescwidth}{15cm}
+
+\makeglossaries
+
+\newglossarystyle{notationlong}{%
+    \setglossarystyle{long}% base this style on the list style
+    \renewenvironment{theglossary}{% Change the table type --> 3 columns
+      \begin{longtable}{lp{0.6\glsdescwidth}}}%
+      {\end{longtable}}%
+    %
+    \renewcommand*{\glossaryheader}{%  Change the table header
+        \bfseries Sign & \bfseries Description \\
+            \hline
+        \endhead}
+    %
+    \renewcommand*{\glossentry}[2]{%  Change the displayed items
+      \glstarget{##1}{\glossentryname{##1}} %
+      & \glossentrydesc{##1}
+      \tabularnewline
+    }
+}
+
+%
+% Add your terms here
+%
+
+\newglossaryentry{b}% label
+{
+  name={\ensuremath{b}},% default display
+  description={the size of a subvector or subdictionary},% description
+  category=symbol% category label
+}
+
+
+\newglossaryentry{g}% label
+{
+  name={\ensuremath{g}},% default display
+  description={generator of group $\Gr$},% description
+  category=symbol% category label
+}
+
+\newglossaryentry{n}% label
+{
+  name={\ensuremath{n}},% default display
+  description={the size of a vector or dictionary},% description
+  category=symbol% category label
+}
+
+\newglossaryentry{secparam}% label
+{
+  name={\ensuremath{\lambda}},% default display
+  description={security parameter},% description
+  category=symbol% category label
+}
