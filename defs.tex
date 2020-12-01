@@ -1,0 +1,136 @@
+%
+% Colors
+%
+%Blue: #268bd2
+%(Grey) Blue: #657b83
+%Green: #859900
+%(Dark) Orange: #cb4b16
+%Red: #dc322f
+%Periwinkle: #6c71c4
+%Pink: #d33682
+%Teal: #2aa198
+%Yellow: #b58900
+%
+\definecolor{myPeriColor}{HTML}{6c71c4}
+\definecolor{myPinkColor}{HTML}{D33682}
+\definecolor{myTealColor}{HTML}{2AA198}
+\definecolor{myGreyBlueColor}{HTML}{657B83}
+\definecolor{myBlueColor}{HTML}{268BD2}
+\definecolor{myYellowColor}{HTML}{B58900}
+\definecolor{myGreenColor}{HTML}{859900}
+\definecolor{myRedColor}{HTML}{DC322F}
+\definecolor{myOrangeColor}{HTML}{CB4B16}
+\definecolor{mygray}{gray}{0.5}
+\newcommand{\myblue}[1]{\textcolor{myBlueColor}{#1}}
+\newcommand{\mygblue}[1]{\textcolor{Brown}{#1}}
+\newcommand{\myred}[1]{\textcolor{myRedColor}{#1}}
+\newcommand{\mypink}[1]{\textcolor{myPinkColor}{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\myyellow}[1]{\textcolor{myYellowColor}{#1}}
+\newcommand{\mygreen}[1]{\textcolor{myGreenColor}{#1}}
+\newcommand{\g}[1]{\textcolor{ForestGreen}{#1}}
+\newcommand{\myperi}[1]{\textcolor{myPeriColor}{#1}}
+\newcommand{\m}[1]{\myyellow{#1}}
+\newcommand{\N}[1]{\myred{#1}}
+
+%
+% Math notation
+%
+\newcommand{\bezout}{B\'ezout\xspace}
+\newcommand{\Gr}{\ensuremath{\mathbb{G}}\xspace}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}\xspace}
+\newcommand{\Zp}{\ensuremath{\Z_p}\xspace}
+\newcommand{\lagr}{\ensuremath{\mathcal{L}}\xspace}
+\newcommand{\Oh}{\ensuremath{\mathcal{O}}}  % for Big-Oh notation
+\newcommand{\primes}{\ensuremath{\mathsf{Primes}}\xspace}
+
+\newcommand{\vect}[1]{\ensuremath{\bm{#1}}}
+\newcommand{\matr}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\diag}{\ensuremath{\mathsf{diag}}}
+\newcommand{\dft}{\ensuremath{\mathsf{DFT}}}
+\newcommand{\invdft}{\ensuremath{\mathsf{DFT}^{-1}}}
+
+% For adding "--- a_i ---" lines to a matrix A whose rows are a_i's
+% e.g., \begin{bmatrix} \llongdash a_i \rlongdash\end{bmatrix}
+\makeatletter
+\newcommand{\longdash}[1][2em]{%
+    \makebox[#1]{$\m@th\smash-\mkern-7mu\cleaders\hbox{$\mkern-2mu\smash-\mkern-2mu$}\hfill\mkern-7mu\smash-$}}
+\makeatother
+\newcommand{\omitskip}{\kern-\arraycolsep}
+\newcommand{\llongdash}[1][1.5em]{\longdash[#1]\omitskip}
+\newcommand{\rlongdash}[1][1.5em]{\omitskip\longdash[#1]}
+
+%
+% Crypto things
+%
+\newcommand{\poly}{\ensuremath{\mathsf{poly}}\xspace}
+\newcommand{\negl}{\ensuremath{\mathsf{negl}}\xspace}
+\newcommand{\adv}{\ensuremath{\mathcal{A}}\xspace}
+\newcommand{\badv}{\ensuremath{\mathcal{B}}\xspace}
+
+%
+% Comments and annotations
+%
+\newcommand{\authnote}[2]{{\footnotesize\textcolor{red}{{\textbf{#1:} }\textcolor{blue}{#2}}}}
+\newcommand{\anote}[1]{{\authnote{Alin}{#1}}}
+\newcommand{\atodo}[1]{{\authnote{Alin (\textbf{TODO})}{#1}}}
+
+\newcommand{\nop}{\myred{$\times$}}
+\newcommand{\yep}{\textcolor{ForestGreen}{\textbf{\checkmark}}}
+\newcommand{\idk}{{?}}
+
+%
+% Tables
+%
+\newcolumntype{R}[2]{%
+    >{\adjustbox{angle=#1,lap=\width-(#2)}\bgroup}%
+    l%
+    <{\egroup}%
+}
+% e.g. \rot{60}{1em}{Title} rotates the title "Title" by 60 degrees and leaves 1em of space in the column
+\newcommand*\rot[2]{\multicolumn{1}{R{#1}{#2}}}% no optional argument here, please!
+
+%
+% Formatting
+%
+\newcommand{\eg}{\textit{e.g.,}\xspace}
+\newcommand{\api}{\smallskip \hangindent=\parindent \hangafter=1 \noindent}
+\newcommand{\parhead}[1]{\medskip\noindent{\bfseries\boldmath\ignorespaces{#1}}}
+\newcommand{\alg}[1]{\ensuremath{\boldmath\mathsf{#1}}}
+% for setting custom font sizes
+\newlength{\mysize}
+\newcommand{\myfontsize}[1]{\setlength{\mysize}{#1pt}%
+    \fontsize{\mysize}{1.2\mysize}\selectfont}
+
+% For commenting inside algorithm blocks built using figure/tabular, not algorithmic
+\newcommand{\comment}[1]{\ifEurocrypt\scriptsize\else\footnotesize\fi$\triangleright$ \textcolor{mygray}{\textit{#1}}}
+\newcommand{\commentcont}[1]{\ifEurocrypt\scriptsize\else\footnotesize\fi\phantom{$\triangleright$} \textcolor{mygray}{\textit{#1}}}
+
+%
+% VC things
+%
+
+\newcommand{\pp}{\ensuremath{\mathsf{PP}}\xspace}
+\newcommand{\prk}{\ensuremath{\mathsf{prk}}\xspace}
+\newcommand{\vrk}{\ensuremath{\mathsf{vrk}}\xspace}
+\newcommand{\upk}{\ensuremath{\mathsf{upk}}\xspace}
+
+\newcommand{\vcsetup}{\ensuremath{\mathsf{VC.Setup}}\xspace}
+\newcommand{\vccommit}{\ensuremath{\mathsf{VC.Commit}}\xspace}
+\newcommand{\vcopenpos}{\ensuremath{\mathsf{VC.ProvePos}}\xspace}
+\newcommand{\vcverifypos}{\ensuremath{\mathsf{VC.VerifyPos}}\xspace}
+\newcommand{\vcverifyupk}{\ensuremath{\mathsf{VC.VerifyUPK}}\xspace}
+\newcommand{\vcdigupdate}{\ensuremath{\mathsf{VC.UpdateDig}}\xspace}
+\newcommand{\vcproofupdate}{\ensuremath{\mathsf{VC.UpdateProof}}\xspace}
+\newcommand{\vcopenall}{\ensuremath{\mathsf{VC.ProveAll}}\xspace}
+
+%
+% Theorems, defs, lemmas, etc.
+%
+\ifNotEurocrypt
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\fi

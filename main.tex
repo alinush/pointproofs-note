@@ -1,0 +1,88 @@
+%
+% Defines for camera-ready version:
+%  - Use \ifEurocrypt <bla> \else <wla> \fi throughout paper
+%  - Also, can use \ifNotEurocrypt <bla> \fi
+%
+\newif\ifEurocrypt
+%\Eurocrypttrue    % uncomment for camera-ready version
+\newif\ifNotEurocrypt
+\ifEurocrypt\NotEurocryptfalse\else\NotEurocrypttrue\fi
+
+\ifEurocrypt
+\documentclass{llncs}
+\pagestyle{plain}
+\else
+\documentclass[10pt]{extarticle}
+\fi
+
+\input{includes}
+\input{defs}
+
+\title{\textbf{How to compute all Pointproofs}} %from Hidden-Order Groups}}
+
+\ifNotEurocrypt
+\author{Alin Tomescu$^{1}$}
+\date{%
+{\small $^1$\textit{VMware Research}}\\[.5em]%
+{\small Monday, November 30th, 2020}}
+\else
+\author{}
+\date{}                     %% if you don't need date to appear
+\fi
+
+%\input{glossary}
+
+\hypersetup{%
+    colorlinks=true,% hyperlinks will be coloured
+    linkcolor=blue,% hyperlink text
+    citecolor=red,
+}
+
+% otherwise, subsubsections are not numbered
+\setcounter{secnumdepth}{3}
+
+\begin{document}
+
+\maketitle
+
+\ifEurocrypt
+    \vspace{-5em}
+\fi
+\begin{abstract}
+    In this short note, we explain how to reduce the time to compute all $N$ proofs in the \textit{Pointproofs} vector commitment (VC) scheme by Gorbunov et al., from $O(N^2)$ time to $O(N\log{N})$.
+    The key ingredient is representing the computation of all proofs as a product between a Toeplitz matrix and the committed vector, which can be computed fast using Discrete Fourier Transforms (DFTs).
+    We quickly prototype our algorithm in C++ and show it is much faster than the naive algorithm for computing all proofs in Pointproofs.
+\end{abstract}
+
+%\ifNotEurocrypt
+%{
+%\hypersetup{hidelinks}
+%\clearpage
+%\tableofcontents
+%\clearpage
+%}
+%\fi
+
+\input{intro}
+\input{prelims}
+\input{constr}
+\input{impl}
+\input{conclusion}
+
+\ifEurocrypt
+    \bibliographystyle{abbrv}
+    %\bibliographystyle{plain}
+    {\footnotesize
+    \bibliography{references}}
+\else
+    \clearpage
+    \bibliographystyle{alpha}
+    \bibliography{references}
+\fi
+
+
+\ifNotEurocrypt
+    %\clearpage
+\fi
+
+\end{document}

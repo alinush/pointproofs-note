@@ -1,0 +1,40 @@
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\ifNotEurocrypt
+    \usepackage{amsthm}
+\fi
+\usepackage{authblk}    % for \author[1] and \affil[1]
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{cite}
+%\usepackage{forest}
+\ifNotEurocrypt
+    \usepackage[margin=1in,bmargin=1in]{geometry} % 1 inch margins
+\fi
+%\usepackage[acronym,automake,nomain]{glossaries}
+%\usepackage{glossaries-extra}
+\usepackage{hyperref}
+\usepackage{hyphenat}
+\usepackage[utf8]{inputenc}
+\usepackage{lscape}
+%\usepackage{times}         % for theme with Times
+\ifNotEurocrypt
+    \usepackage{libertine}      % for theme with cooler Biolinum font
+\fi
+\usepackage{makecell}
+\ifNotEurocrypt
+    \usepackage{titlesec}
+\fi
+\usepackage{titling}
+\usepackage{transparent}
+\usepackage[dvipsnames]{xcolor}
+%\usepackage{enumitem}
+\usepackage{xspace}
+\usepackage[capitalize]{cleveref}
+
+% for some reason, these are not defined in cleveref and I was getting '??' in my crefs to subsubsections in the appendix
+\crefformat{subsubsubappendix}{Appendix #2#1#3}
+\crefmultiformat{subsubsubappendix}{Appendices #2#1#3}{ and~#2#1#3}{, #2#1#3}{, and~#2#1#3}

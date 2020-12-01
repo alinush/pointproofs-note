@@ -1,0 +1,11 @@
+\section{Introduction}
+
+Gorbunov et al.~\cite{GRWZ20} introduced \textit{Pointproofs}, an elegant vector commitment (VC) scheme which enhances the Libert-Yung VC~\cite{LY10} with \textit{subvector} proofs and (cross)aggregation of proofs.
+Pointproofs was originally proposed for stateless validation in cryptocurrencies with smart contracts, where each contract is allocated a small memory of $N=1000$ locations that can be committed to using the Pointproofs VC.
+In subsequent work, Leung et al.~\cite{LGG+20} build an authenticated dictionary called \textit{Aardvark} on top of the Pointproofs VC.
+Importantly, both of these applications would benefit greatly from faster proof computation.
+
+Unfortunately, the fastest way to compute all $N$ proofs in the Pointproofs VC is $O(N^2)$ time, which can be too slow for large VCs.
+In this short paper, we give a faster $O(N\log{N})$ time algorithm.
+We implement our algorithm and observe it outperforms the naive one very quickly (see \cref{f:benchmarks}).
+We also observe that our $O(N\log{N})$-time proof precomputation for Pointproofs is slightly faster than the $O(N\log{N})$-time proof precomputation in VCs based on Kate-Zaverucha-Goldberg (KZG) polynomial commitments~\cite{KZG10,FK20,TAB+20}.
