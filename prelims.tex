@@ -119,6 +119,12 @@ It is also well-known that the above diagonalization can be leveraged to efficie
 \end{align}
 In other words, such products by circulant matrices reduce to computing two DFTs and one inverse DFT.
 Overall, this takes $O(N\log{N})$ time.
+\\
+
+\noindent\textit{Observation:} The DFT on $\vect{m}$ is a DFT on field elements, rather than group elements:
+\begin{align}
+    \dft(\vect{m}) &= \vect{\hat{m}} = [\hat{m}_1, \dots, \hat{m}_N]^\top\in \Zp,\ \text{where}\ \hat{m}_i= \prod_{j\in [N]} m_j (\omega_N)^{(i-1)(j-1)},\forall i\in[N]
+\end{align}
 
 \subsection{Toeplitz matrices}
 \label{s:toeplitz}
