@@ -102,8 +102,9 @@ The following matrix is a circulant matrix:
 \label{s:circulant:multiply-vec}
 It is well-known that one can \textit{diagonalize}~\cite{Diag20} any circulant matrix $\matr{C}_N$ with vector representation $\vect{c}_N$ as:
 \begin{align}
-    \matr{C}_N &= (\matr{W}_N)^{-1} \diag(\matr{W}_N \vect{c}_N) \matr{W}_N\\
-               &= (\matr{W}_N)^{-1} \diag(\dft(\vect{c}_N)) \matr{W}_N
+    \matr{C}_N
+    %&= (\matr{W}_N)^{-1} \diag(\matr{W}_N \vect{c}_N) \matr{W}_N\\
+     &= (\matr{W}_N)^{-1} \diag(\dft(\vect{c}_N)) \matr{W}_N
 \end{align}
 Let $m=[m_1,\dots,m_N]^\top$ be a vector.
 Let $\vect{x}\circ\vect{y} = [x_1 y_1, x_2 y_2,\dots, x_N y_N]^\top$ denote the Hadamard product of two column vectors.
@@ -276,16 +277,20 @@ We can set its diagonal to be anything, say, $\myperi{a_0}$.
 \end{align}
 
 We can now generalize to any $N$!
-Let $[a_0, \dots, a_{N-1}]^\top$ be the first column of $\matr{A}_N$ and $[a_0, a_{-1}, a_{-2},\dots,a_{-(N-1)}]$ be the first row of $\matr{A}_N$, which together fully define the matrix $\matr{A}_N$.
+Let $[a_0, a_1,\dots, a_{N-1}]^\top$ be the first column of $\matr{A}_N$, and let $[a_0, a_{-1}, a_{-2},\dots$, $a_{-(N-1)}]$ be the first row of $\matr{A}_N$, which together fully define the matrix $\matr{A}_N$.
 We can let $\matr{B}_N$ be a Toeplitz matrix whose first column is:
 \begin{align}
     [a_0,a_{-(N-1)},a_{-(N-2)},\dots,a_{-1}]^\top
 \end{align}
 and whose first row is:
 \begin{align}
-    [a_0,a_{(N-1)},a_{(N-2)},\dots,a_{1}]^\top
+    [a_0,a_{N-1},a_{N-2},\dots,a_{1}]^\top
 \end{align}
-This ensure that $\matr{C}_{2N}$ is circulant, which allows us to multiply it by $\vect{m'}$ in $O(N\log{N})$ time (see \cref{s:circulant:multiply-vec}) and obtain $\matr{A}_N \vect{m}$ as per \cref{eq:toeplitz-in-circ}.
+This ensures that $\matr{C}_{2N}$ is circulant, which allows us to multiply it by $\vect{m'}$ in $O(N\log{N})$ time (see \cref{s:circulant:multiply-vec}) and obtain $\matr{A}_N \vect{m}$ as per \cref{eq:toeplitz-in-circ}.
+Note that the vector representation of $\matr{C}_{2N}$ is:
+\begin{align}
+    \vect{c}_{2N} = [a_0, a_1, \dots, a_{N-1}, a_0,a_{-(N-1)},a_{-(N-2)},\dots,a_{-1}]^\top
+\end{align}
 
 \subsection{Pointproofs}
 \label{s:pointproofs}

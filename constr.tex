@@ -1,7 +1,9 @@
+\newcommand{\Grid}{\ensuremath{\myyellow{g_1^{0}}}}
+
 \section{Computing all Pointproofs}
 \label{s:pointproofs:precompute-all-proofs}
 
-Recall from \cref{eq:indiv-proof} that a proof $\pi_i$ for an element $m_i$ of $\vect{m}$ is:
+Recall from \cref{eq:indiv-proof} that a proof $\pi_i$ for an element $m_i$ of $\vect{m} = [m_1,\dots,m_N]^\top$ is:
 \begin{align}
     \pi_i &= g_1^{\sum_{j\in[N]\setminus\{i\}} m_j \alpha^{j + (N+1) - i}}\\
         \label{eq:indiv-proof-prod}
@@ -19,19 +21,18 @@ First, observe that each $\pi_i$ is missing $g_1^{\alpha^{N+1}m_i}$, since the e
 Second, observe that the exponents $\alpha^j$ shift by one to the right as we move down to the next proof.
 Third, observe these equations can be rewritten as inner products.
 Specifically, if we let:
-\newcommand{\gr}[1]{\textcolor{myYellowColor}{#1}}
 \begin{align}
-    \vect{a}_1 &=[\gr{g_1^0}, g_1^{\alpha^6}, g_1^{\alpha^7}, g_1^{\alpha^8}]\\
-    \vect{a}_2 &=[g_1^{\alpha^4}, \gr{g_1^0}, g_1^{\alpha^6}, g_1^{\alpha^7}]\\
-    \vect{a}_3 &=[g_1^{\alpha^3}, g_1^{\alpha^4}, \gr{g_1^0}, g_1^{\alpha^6}]\\
-    \vect{a}_3 &=[g_1^{\alpha^2}, g_1^{\alpha^3}, g_1^{\alpha^4}, \gr{g_1^0}]
+    \vect{a}_1 &=[\Grid, g_1^{\alpha^6}, g_1^{\alpha^7}, g_1^{\alpha^8}]\\
+    \vect{a}_2 &=[g_1^{\alpha^4}, \Grid, g_1^{\alpha^6}, g_1^{\alpha^7}]\\
+    \vect{a}_3 &=[g_1^{\alpha^3}, g_1^{\alpha^4}, \Grid, g_1^{\alpha^6}]\\
+    \vect{a}_3 &=[g_1^{\alpha^2}, g_1^{\alpha^3}, g_1^{\alpha^4}, \Grid]
 \end{align}
-Then, each proof $\pi_i$ is an inner product $\pi_i = \vect{a_i} \vect{m}^\top$, where $\vect{m}^\top$ is the transpose of $\vect{m}$:
+Then, each proof $\pi_i$ is an inner product between $\vect{a_i}$ and $\vect{m}$:
 \begin{align}
-    \pi_1 &= \vect{a}_1\vect{m}^\top\\
-    \pi_2 &= \vect{a}_2\vect{m}^\top\\
-    \pi_3 &= \vect{a}_3\vect{m}^\top\\
-    \pi_4 &= \vect{a}_4\vect{m}^\top
+    \pi_1 &= \vect{a}_1\vect{m}\\
+    \pi_2 &= \vect{a}_2\vect{m}\\
+    \pi_3 &= \vect{a}_3\vect{m}\\
+    \pi_4 &= \vect{a}_4\vect{m}
 \end{align}
 As a result, the vector of proofs $\vect{\pi}$ can be computed using a matrix product:
 \begin{align}
@@ -54,10 +55,10 @@ As a result, the vector of proofs $\vect{\pi}$ can be computed using a matrix pr
         m_4
     \end{bmatrix} =
     \begin{bmatrix}
-        \gr{g_1^0} & g_1^{\alpha^6} & g_1^{\alpha^7} & g_1^{\alpha^8}\\
-        g_1^{\alpha^4} & \gr{g_1^0} & g_1^{\alpha^6} & g_1^{\alpha^7}\\
-        g_1^{\alpha^3} & g_1^{\alpha^4} & \gr{g_1^0} & g_1^{\alpha^6}\\
-        g_1^{\alpha^2} & g_1^{\alpha^3} & g_1^{\alpha^4} &\gr{g_1^0}
+        \Grid & g_1^{\alpha^6} & g_1^{\alpha^7} & g_1^{\alpha^8}\\
+        g_1^{\alpha^4} & \Grid & g_1^{\alpha^6} & g_1^{\alpha^7}\\
+        g_1^{\alpha^3} & g_1^{\alpha^4} & \Grid & g_1^{\alpha^6}\\
+        g_1^{\alpha^2} & g_1^{\alpha^3} & g_1^{\alpha^4} &\Grid
     \end{bmatrix}
     \begin{bmatrix}
         m_1\\
@@ -66,7 +67,7 @@ As a result, the vector of proofs $\vect{\pi}$ can be computed using a matrix pr
         m_4
     \end{bmatrix}
 \end{align}
-In other words, we have $\vect{\pi}^\top = \matr{A} \vect{m}^\top$, where $\matr{A}$ is the matrix whose $i$th row is $\vect{a}_i$ and $\vect{\pi}$ is a row vector whose $i$th entry is the proof $\pi_i$.
+In other words, we have $\vect{\pi} = \matr{A} \vect{m}$, where $\matr{A}$ is the matrix whose $i$th row is $\vect{a}_i$ and $\vect{\pi}$ is a column vector whose $i$th entry is the proof $\pi_i$.
 \\
 
 \noindent\textit{Key observation:}
@@ -77,7 +78,7 @@ As a result, all proofs can be computed in $O(N\log{N})$ time, which is much fas
 Recall that the proof $\pi_i$ is just a commitment to the vector, but ``shifted'' by $(N+1)-i$ to the right.
 Looking at $m_j$'s coefficients in \cref{eq:indiv-proof-prod}, we can define $\vect{a}_i$ as:
 \begin{align}
-    \vect{a}_i &= \left[g_1^{1+(N+1)-i}, g_1^{2+(N+1)-i}, \dots, g_1^{(i-1)+(N+1)-i}, \gr{g_1^{0}}, g_1^{(i+1)+(N+1)-i}, \dots, g_1^{N+(N+1)-i}\right]
+    \vect{a}_i &= \left[g_1^{1+(N+1)-i}, g_1^{2+(N+1)-i}, \dots, g_1^{(i-1)+(N+1)-i}, \Grid, g_1^{(i+1)+(N+1)-i}, \dots, g_1^{N+(N+1)-i}\right]
 \end{align}
 Next, the matrix $\matr{A}$ is just the matrix whose $i$th row is $\vect{a}_i$:
 \begin{align}
@@ -88,8 +89,39 @@ Next, the matrix $\matr{A}$ is just the matrix whose $i$th row is $\vect{a}_i$:
         \llongdash & \vect{a_N} & \rlongdash
     \end{bmatrix}
 \end{align}
-And all proofs $\vect{\pi} = [\pi_1,\dots,\pi_N]$ can be computed as:
+And all proofs $\vect{\pi} = [\pi_1,\dots,\pi_N]^\top$ can be computed as:
 \begin{align}
-    \vect{\pi}^\top = \matr{A} \vect{m}^\top
+    \vect{\pi} = \matr{A} \vect{m}
 \end{align}
 Again, using the techniques from \cref{s:toeplitz:multiply-vec}, this can be done in $O(N\log{N})$ time.
+We explain briefly how to construct a circulant matrix $\matr{C}_{2N}$ that contains $\matr{A}$.
+First, $\matr{A}$ is defined by its first column, denoted by $\vect{c}_1$, and first row, denoted by $\vect{a}_1$:
+\begin{align}
+    \vect{c}_1 &= [\Grid, g_1^N, g_1^{N-1},\dots, g_1^2]^\top\\
+    \vect{a}_1 &= [\Grid, g_1^{N+2}, g_1^{N+3},\dots, g_1^{2N}]
+\end{align}
+Thus, as explained in \cref{s:toeplitz:multiply-vec}, the circulant matrix $\matr{C}_{2N}$ will have vector representation:
+\begin{align}
+    \vect{c}_{2N}
+    &= [
+        \vect{c_1},
+        \Grid,
+        g_1^{2N},
+        \cdots,
+        g_1^{N+3},
+        g_1^{N+2}
+    ]^\top\\
+    &= [
+        \Grid, g_1^N, g_1^{N-1},\dots, g_1^2,
+        \Grid,
+        g_1^{2N},
+        \cdots,
+        g_1^{N+3},
+        g_1^{N+2}
+    ]^\top\\
+\end{align}
+Let $\vect{m'} = [\vect{m}, \vect{0}_N ]^\top$ be a size-$2N$ vector that extends $\vect{m}$ with $N$ zeros.
+Then, $\vect{\pi}$ can be computed as the first $N$ entries of $\vect{\pi}'$, which will be of size $2N$:
+\begin{align}
+    \vect{\pi'} = \invdft(\dft(\vect{c}_{2N})\circ\dft(\vect{m'}))
+\end{align}
