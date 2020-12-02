@@ -150,9 +150,142 @@ The following matrix is a Toeplitz matrix:
 
 \subsubsection{Multiplying a Toeplitz matrix by a vector}
 \label{s:toeplitz:multiply-vec}
-Computing $\vect{y} = \matr{A}_N \cdot \vect{m}$ for any vector $m = [m_1,\dots, m_N]^\top$ can be done in $O(N\log{N})$ time, if $\matr{A}_N$ is a Toeplitz matrix.
-The idea is to embed $\matr{A}_N$ inside a slightly bigger circulant matrix (see \cref{s:circulant}) in such a way that multiplying this circulant matrix by (an extension of) $\vect{m}$ can be used to compute $\matr{A}_N \cdot \vect{m}$.
-Specifically, note that:
+%Computing $\vect{y} = \matr{A}_N \vect{m}$ for any vector $\vect{m} = [m_1,\dots, m_N]^\top$ can be done in $O(N\log{N})$ time, if $\matr{A}_N$ is a Toeplitz matrix.
+%The idea is to embed $\matr{A}_N$ inside a slightly bigger circulant matrix (see \cref{s:circulant}) in such a way that multiplying this circulant matrix by an extension $\vect{m'}$ of $\vect{m}$ can be used to compute $\matr{A}_N \cdot \vect{m}$.
+
+%Specifically,
+Suppose we want to multiply a Toeplitz matrix $\matr{A}_N$ by a size-$N$ colum vector $\vect{m}$.
+Note that we can turn any such $\matr{A}_N$ into a circulant matrix of size $2N$ by finding another matrix $\matr{B}_N$ so that the following matrix is circulant:
+\begin{align}
+    \matr{C}_{2N} &= \begin{bmatrix}
+        \matr{A}_N & \matr{B}_N\\
+        \matr{B}_N & \matr{A}_N\\
+    \end{bmatrix}
+\end{align}
+For now, assume we can find such a $\matr{B}_N$.
+Then, let $\vect{m'} = \begin{bmatrix}\vect{m}\\\vect{0}_N\end{bmatrix}$ be an extension of the column vector $\vect{m}$ with $N$ extra zeros appended to it, which are denoted by the size-$N$ column vector $\vect{0}_N$.
+Finally, note that:
+\begin{align}
+     \label{eq:toeplitz-in-circ}
+     \matr{C}_{2N} \vect{m'}
+     &= \begin{bmatrix}
+         \matr{A}_N & \matr{B}_N\\
+         \matr{B}_N & \matr{A}_N\\
+     \end{bmatrix} \begin{bmatrix}
+     \vect{m}\\
+     \vect{0}_N
+     \end{bmatrix}
+     = \begin{bmatrix}
+         \matr{A}_N \vect{m}\\
+         \matr{B}_N \vect{m}\\
+     \end{bmatrix}
+\end{align}
+In other words, we can compute $\matr{A}_N \vect{m}$ by computing $\matr{C}_{2N}\vect{m'}$, which can be done in $O(N\log{N})$ time (see \cref{s:circulant:multiply-vec}).
+
+\parhead{How to find the matrix $\matr{B}_N$?}
+First, let us take a small example $\matr{A}_4$:
+\begin{align}
+    \matr{A}_4 = \begin{bmatrix}
+        \myperi{a_0}    & \N{a_{-1}}   & \myblue{a_{-2}} & \mypink{a_{-3}}\\
+        \g{a_1}         & \myperi{a_0}   & \N{a_{-1}}     & \myblue{a_{-2}}\\
+        \myyellow{a_2}  & \g{a_1}      & \myperi{a_0} & \N{a_{-1}}\\
+        \mygblue{a_3} & \myyellow{a_2} & \g{a_1}    & \myperi{a_0}
+    \end{bmatrix}
+\end{align}
+Let us start embedding it in a circulant matrix $\matr{C}_8$:
+\begin{align}
+    \matr{C}_8 &= \begin{bmatrix}
+        \matr{A}_4 & \matr{B}_4\\
+        \matr{B}_4 & \matr{A}_4\\
+    \end{bmatrix} = \begin{bmatrix}
+        \myperi{a_0}    & \N{a_{-1}}     & \myblue{a_{-2}} & \mypink{a_{-3}}
+        & ? & ? & ? & ?\\
+        \g{a_1}         & \myperi{a_0}   & \N{a_{-1}}      & \myblue{a_{-2}}
+        & ? & ? & ? & ?\\
+        \myyellow{a_2}  & \g{a_1}        & \myperi{a_0}    & \N{a_{-1}}
+        & ? & ? & ? & ?\\
+        \mygblue{a_3}   & \myyellow{a_2} & \g{a_1}         & \myperi{a_0}
+        & ? & ? & ? & ?\\
+        ? & ? & ? & ? &
+        \myperi{a_0}    & \N{a_{-1}}     & \myblue{a_{-2}} & \mypink{a_{-3}}\\
+        ? & ? & ? & ? &
+        \g{a_1}         & \myperi{a_0}   & \N{a_{-1}}      & \myblue{a_{-2}}\\
+        ? & ? & ? & ? &
+        \myyellow{a_2}  & \g{a_1}        & \myperi{a_0}    & \N{a_{-1}}\\
+        ? & ? & ? & ? &
+        \mygblue{a_3}   & \myyellow{a_2} & \g{a_1}         & \myperi{a_0}
+    \end{bmatrix}
+\end{align}
+The remaining task is to fill in the gaps that define $\matr{B}_4$ while ensuring $\matr{C}_8$ remains circulant.
+In this case, we can easily fill in some of the gaps:
+\begin{align}
+    \matr{C}_8 &= \begin{bmatrix}
+        \matr{A}_4 & \matr{B}_4\\
+        \matr{B}_4 & \matr{A}_4\\
+    \end{bmatrix} = \begin{bmatrix}
+        \begin{array}{c c c c |c c c c}
+        \myperi{a_0}    & \N{a_{-1}}     & \myblue{a_{-2}} & \mypink{a_{-3}}
+        & ? & ? & ? & ?\\
+        \g{a_1}         & \myperi{a_0}   & \N{a_{-1}}      & \myblue{a_{-2}}
+        & \mypink{a_{-3}} & ? & ? & ?\\
+        \myyellow{a_2}  & \g{a_1}        & \myperi{a_0}    & \N{a_{-1}}
+        & \myblue{a_{-2}} & \mypink{a_{-3}} & ? & ?\\
+        \mygblue{a_3}   & \myyellow{a_2} & \g{a_1}         & \myperi{a_0}
+        & \N{a_{-1}} & \myblue{a_{-2}} & \mypink{a_{-3}} & ?\\
+        % Second half starts here!
+        \hline
+        ? &  \mygblue{a_3} & \myyellow{a_2} & \g{a_1} &
+        \myperi{a_0}    & \N{a_{-1}}     & \myblue{a_{-2}} & \mypink{a_{-3}}\\
+        ? & ? & \mygblue{a_3} & \myyellow{a_2} &
+        \g{a_1}         & \myperi{a_0}   & \N{a_{-1}}      & \myblue{a_{-2}}\\
+        ? & ? & ? & \mygblue{a_3} &
+        \myyellow{a_2}  & \g{a_1}        & \myperi{a_0}    & \N{a_{-1}}\\
+        ? & ? & ? & ? &
+        \mygblue{a_3}   & \myyellow{a_2} & \g{a_1}         & \myperi{a_0}
+        \end{array}
+    \end{bmatrix}
+\end{align}
+Note that the only thing missing is the descending diagonal of $\textbf{B}_4$, since we have defined all of its other entries above!
+We can set its diagonal to be anything, say, $\myperi{a_0}$.
+\begin{align}
+    \matr{C}_8 &= \begin{bmatrix}
+        \matr{A}_4 & \matr{B}_4\\
+        \matr{B}_4 & \matr{A}_4\\
+    \end{bmatrix} = \begin{bmatrix}
+        \begin{array}{c c c c |c c c c}
+            \myperi{a_0}    & \N{a_{-1}}     & \myblue{a_{-2}} & \mypink{a_{-3}}
+            & \myperi{a_0} & \mygblue{a_3} & \myyellow{a_2} & \g{a_1}\\
+            \g{a_1}         & \myperi{a_0}   & \N{a_{-1}}      & \myblue{a_{-2}}
+            & \mypink{a_{-3}} & \myperi{a_0} & \mygblue{a_3} & \myyellow{a_2}\\
+            \myyellow{a_2}  & \g{a_1}        & \myperi{a_0}    & \N{a_{-1}}
+            & \myblue{a_{-2}} & \mypink{a_{-3}} & \myperi{a_0} & \mygblue{a_3}\\
+            \mygblue{a_3}   & \myyellow{a_2} & \g{a_1}         & \myperi{a_0}
+            & \N{a_{-1}} & \myblue{a_{-2}} & \mypink{a_{-3}} & \myperi{a_0}\\
+            % Second half starts here!
+            \hline
+            \myperi{a_0} &  \mygblue{a_3} & \myyellow{a_2} & \g{a_1} &
+            \myperi{a_0}    & \N{a_{-1}}     & \myblue{a_{-2}} & \mypink{a_{-3}}\\
+            \mypink{a_{-3}} & \myperi{a_0} & \mygblue{a_3} & \myyellow{a_2} &
+            \g{a_1}         & \myperi{a_0}   & \N{a_{-1}}      & \myblue{a_{-2}}\\
+            \myblue{a_{-2}} & \mypink{a_{-3}} & \myperi{a_0} & \mygblue{a_3} &
+            \myyellow{a_2}  & \g{a_1}        & \myperi{a_0}    & \N{a_{-1}}\\
+            \N{a_{-1}} & \myblue{a_{-2}} & \mypink{a_{-3}} & \myperi{a_0} &
+            \mygblue{a_3}   & \myyellow{a_2} & \g{a_1}         & \myperi{a_0}
+        \end{array}
+    \end{bmatrix}
+\end{align}
+
+We can now generalize to any $N$!
+Let $[a_0, \dots, a_{N-1}]^\top$ be the first column of $\matr{A}_N$ and $[a_0, a_{-1}, a_{-2},\dots,a_{-(N-1)}]$ be the first row of $\matr{A}_N$, which together fully define the matrix $\matr{A}_N$.
+We can let $\matr{B}_N$ be a Toeplitz matrix whose first column is:
+\begin{align}
+    [a_0,a_{-(N-1)},a_{-(N-2)},\dots,a_{-1}]^\top
+\end{align}
+and whose first row is:
+\begin{align}
+    [a_0,a_{(N-1)},a_{(N-2)},\dots,a_{1}]^\top
+\end{align}
+This ensure that $\matr{C}_{2N}$ is circulant, which allows us to multiply it by $\vect{m'}$ in $O(N\log{N})$ time (see \cref{s:circulant:multiply-vec}) and obtain $\matr{A}_N \vect{m}$ as per \cref{eq:toeplitz-in-circ}.
 
 \subsection{Pointproofs}
 \label{s:pointproofs}

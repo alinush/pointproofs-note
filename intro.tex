@@ -1,1 +1,9 @@
 \section{Introduction}
+
+Gorbunov et al.~\cite{GRWZ20} introduced \textit{Pointproofs}, an elegant vector commitment (VC) scheme which enhances the Libert-Yung VC~\cite{LY10} with \textit{subvector} proofs and (cross)aggregation of proofs.
+Pointproofs was originally proposed for stateless validation in cryptocurrencies with smart contracts, where each contract is allocated a small memory of $N=1000$ locations that can be committed to using the Pointproofs VC.
+In subsequent work, Leung et al.~\cite{LGG+20} build an authenticated dictionary called \textit{Aardvark} on top of the Pointproofs VC.
+We stress that both applications benefit immensely from faster proof computation.
+First, for stateless validation, larger contract memories can be used if proofs can be computed faster.
+Second, for Aardvark, committing to the dictionary can be sped up by computing all proofs faster.
+Lastly, we observe that our proof precomputation for Pointproofs is \textit{concretely} faster than the proof precomputation in other bilinear-based VCs~\cite{TAB+20}, which could make Pointproofs better suited for stateless validation in cryptocurrencies.
