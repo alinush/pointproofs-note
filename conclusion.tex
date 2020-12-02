@@ -1,6 +1,8 @@
 \section{Conclusion}
-We reduced the time to compute all $N$ proofs in the Pointproofs vector commitment scheme from $O(N^2)$ time to $O(N\log{N})$.
+In this short paper, we reduced the time to compute all $N$ proofs in the Pointproofs vector commitment scheme from $O(N^2)$ to $O(N\log{N})$.
 The key ingredient was representing the proof computation as a product between a Toeplitz matrix and a vector, which can be computed fast via Discrete Fourier Transforms (DFTs) on group elements.
+Our implementation shows our $O(N\log{N})$ algorithm is considerably faster when compared to the naive $O(N^2)$ proof precomputation algorithm in Pointproofs.
+It is also slightly faster than the FK-based~\cite{FK20} proof precomputation in KZG-based VCs such as~\cite{TAB+20}.
 
 \parhead{Acknowledgements.}
-We thank Leonid Reyzin for suggesting to look at Pointproofs from the lens of polynomial commitments, which inspired the author to devise this technique for computing all proofs fast!
+We thank Leonid Reyzin for suggesting to look at Pointproofs from the lens of polynomial commitments, which inspired the author to devise this technique for computing all proofs fast.

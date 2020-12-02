@@ -2,9 +2,11 @@
 
 \parhead{Notation.}
 Let $\Gr_1, \Gr_2, \Gr_T$ denote groups of prime order $p$.
+Let $e : \Gr_1 \times \Gr_2\rightarrow \Gr_T$~\cite{GPS08} be a Type III pairing (i.e., $\Gr_1\ne \Gr_2$ and there is no efficiently computable homomorphisms between $\Gr_1$ and $\Gr_2$).
 Let $[N] = \{1,2,\dots, N\}$.
 Let $\vect{m}=[m_1, m_2, \dots, m_N]$ be a vector of elements, indexed from 1 to $N$.
 Let $\vect{m}^\top$ denote its transpose: a column vector whose $i$th entry is $m_i$.
+Let $\vect{x}\circ\vect{y} = [x_1 y_1, x_2 y_2,\dots, x_N y_N]^\top$ denote the Hadamard product of two column vectors.
 Let $\diag(\vect{m})$ denote the $N\times N$ diagonal matrix whose entry at position $(i,i)$ is $m_i$ and all other entries are 0.
 Also, $\diag(\vect{m})=\diag(\vect{m}^\top)$.
 Let $\vect{m}[S] = (m_i)_{i \in S}$ be a \textit{subvector} of $\vect{m}$ consisting only of the positions $i\in S$.
@@ -18,8 +20,7 @@ The \textit{Discrete Fourier Transform (DFT)} of a vector $\vect{x} = [x_1,\dots
     \dft(\vect{x}) &= \vect{\hat{x}} = [\hat{x}_1, \dots, \hat{x}_N]^\top\in \Gr_1^N,\ \text{where}\ \hat{x}_i= \prod_{j\in [N]} (x_j)^{(\omega_N)^{(i-1)(j-1)}},\forall i\in[N]
 \end{align}
 Importantly, the DFT can be computed in $O(N\log{N})$ time~\cite{CLRS09}.
-Furthermore, it is invertible.
-As we discuss next, one can define $\invdft(\cdot)$ such that $\invdft(\dft(\vect{x})) = \dft(\invdft(\vect{x})) = \vect{x}$.
+Furthermore, it is invertible: one can define $\invdft(\cdot)$ such that $\invdft(\dft(\vect{x})) = \dft(\invdft(\vect{x})) = \vect{x}$.
 %where:
 %\begin{align}
 %
@@ -51,6 +52,7 @@ This makes it very easy to define the \textit{inverse DFT} of a size-$N$ column 
 \end{align}
 Note that the inverse of the DFT matrix $\matr{W}_N$ is simply $\frac{1}{N} \matr{W}_N$.
 Thus, an inverse DFT can be reduced to computing a normal DFT and scaling it by $1/N$.
+As a result, an inverse DFT also takes $O(N\log{N})$ time.
 
 %\parhead{An example.}
 %The DFT matrix for $N=4$ is:
@@ -80,7 +82,7 @@ A \textit{circulant matrix} of size $N\times N$ is a matrix of the following for
 \end{align}
 
 In other words, as you go from left to right, each column is set to the previous column but ``rotated down'' by one.
-(Looked at differently, each row is set to the row above it ``rotated to the right'' by one.)
+(Looked at differently, each row is set to the row above it but ``rotated to the right'' by one.)
 
 \parhead{Vector representation.}
 Note that $\matr{C}_N$ is uniquely determined by its first column, which we denote by $\vect{c}_N = [c_0, c_1, c_2, \dots c_{N-1}]^\top$.
@@ -107,7 +109,7 @@ It is well-known that one can \textit{diagonalize}~\cite{Diag20} any circulant m
      &= (\matr{W}_N)^{-1} \diag(\dft(\vect{c}_N)) \matr{W}_N
 \end{align}
 Let $m=[m_1,\dots,m_N]^\top$ be a vector.
-Let $\vect{x}\circ\vect{y} = [x_1 y_1, x_2 y_2,\dots, x_N y_N]^\top$ denote the Hadamard product of two column vectors.
+Recall $\vect{x}\circ\vect{y} = [x_1 y_1, x_2 y_2,\dots, x_N y_N]^\top$ is the Hadamard product of two column vectors.
 It is also well-known that the above diagonalization can be leveraged to efficiently compute matrix-vector products $\matr{C}_N\vect{m}$ as:
 \begin{align}
     \matr{C}_N \vect{m}
@@ -119,6 +121,12 @@ It is also well-known that the above diagonalization can be leveraged to efficie
 \end{align}
 In other words, such products by circulant matrices reduce to computing two DFTs and one inverse DFT.
 Overall, this takes $O(N\log{N})$ time.
+\\
+
+\noindent\textit{Observation:} The DFT on $\vect{m}$ is a DFT on field elements, rather than group elements:
+\begin{align}
+    \dft(\vect{m}) &= \vect{\hat{m}} = [\hat{m}_1, \dots, \hat{m}_N]^\top\in \Zp,\ \text{where}\ \hat{m}_i= \prod_{j\in [N]} m_j (\omega_N)^{(i-1)(j-1)},\forall i\in[N]
+\end{align}
 
 \subsection{Toeplitz matrices}
 \label{s:toeplitz}
@@ -135,7 +143,7 @@ A \textit{Toeplitz matrix} or \textit{diagonal-constant matrix} of size $N\times
 \end{bmatrix}
 \end{align}
 In other words, all of $\matr{A}_N$'s descending diagonals (from left to right) have the same entries.
-To simplify notation, we are slightly abusing notation here and using negative indices for the entries of the matrix.
+For simplicity, we are slightly abusing notation here and using negative indices for the entries of the matrix.
 Note that a circulant matrix (see \cref{s:circulant}) is a special kind of Toeplitz matrix with $a_{-i} = a_{N-i},\forall i\in [N - 1]$.
 
 \parhead{An example.}
@@ -218,7 +226,7 @@ Let us start embedding it in a circulant matrix $\matr{C}_8$:
     \end{bmatrix}
 \end{align}
 The remaining task is to fill in the gaps that define $\matr{B}_4$ while ensuring $\matr{C}_8$ remains circulant.
-In this case, we can easily fill in some of the gaps:
+Fortunately, we can easily fill in some of the gaps:
 \begin{align}
     \matr{C}_8 &= \begin{bmatrix}
         \matr{A}_4 & \matr{B}_4\\
@@ -246,8 +254,9 @@ In this case, we can easily fill in some of the gaps:
         \end{array}
     \end{bmatrix}
 \end{align}
-Note that the only thing missing is the descending diagonal of $\textbf{B}_4$, since we have defined all of its other entries above!
-We can set its diagonal to be anything, say, $\myperi{a_0}$.
+The only thing missing is $\matr{B}_4$'s descending diagonal, since we have defined all of its other entries above!
+Note that $\matr{C}_8$ will be circulant as long as this diagonal has the same entries.
+Thus, for simplicity, we set them all to $\myperi{a_0}$.
 \begin{align}
     \matr{C}_8 &= \begin{bmatrix}
         \matr{A}_4 & \matr{B}_4\\
@@ -275,8 +284,7 @@ We can set its diagonal to be anything, say, $\myperi{a_0}$.
         \end{array}
     \end{bmatrix}
 \end{align}
-
-We can now generalize to any $N$!
+We can now generalize converting any $\matr{A}_N$ to a circulant matrix $\matr{C}_{2N}$.
 Let $[a_0, a_1,\dots, a_{N-1}]^\top$ be the first column of $\matr{A}_N$, and let $[a_0, a_{-1}, a_{-2},\dots$, $a_{-(N-1)}]$ be the first row of $\matr{A}_N$, which together fully define the matrix $\matr{A}_N$.
 We can let $\matr{B}_N$ be a Toeplitz matrix whose first column is:
 \begin{align}
@@ -299,7 +307,7 @@ Gorbunov et al.~\cite{GRWZ20} enhance the VC by Libert and Yung~\cite{LY10} with
 Additionally, they also enable aggregation of subvector proofs across different vector commitments, which they show is useful for stateless smart contract validation in cryptocurrencies.
 
 \parhead{Public parameters.}
-Let $e : \Gr_1 \times \Gr_2\rightarrow \Gr_T$~\cite{GPS08} be a Type III pairing (i.e., $\Gr_1\ne \Gr_2$ and there is no efficiently computable homomorphisms between $\Gr_1$ and $\Gr_2$).
+The Pointproofs VC is \textit{bounded}: it can only commit to vectors of max size $N$.
 Let $g_1,g_2,g_T$ be generators of $\Gr_1, \Gr_2$ and $\Gr_T$ respectively, which everybody knows.
 The $O(N)$-sized \textit{proving key} used to commit to a vector is:
 \begin{align}
@@ -310,6 +318,7 @@ The $O(N)$-sized \textit{verification key} used to verify proofs is:
     \vrk = (g_2^{\alpha},\dots,g_2^{\alpha^N}; g_T^{\alpha^{N+1}})
 \end{align}
 Note that $g_1^{\alpha^{N+1}}$ is ``missing'' from the proving key, which is essential for security.
+Together, \prk and \vrk constitute the public parameters of the scheme and must be generated securely via a \textit{trusted setup}.
 %They only support updating commitments, but proofs could be made updatable at the cost of linear-sized update keys.
 
 \parhead{Commitment.}
@@ -318,10 +327,10 @@ A commitment $C$ to a vector $\vect{m}=[m_1,\dots,m_N]$ is:
     C = \prod_{i\in[N]} \left(g_1^{\alpha^i}\right)^{m_i}
       = g_1^{\sum_{i\in [N]} m_i\alpha^i}
 \end{align}
-The commitment can be computed with $O(N)$ exponentiations.
+The commitment can be computed with $O(N)\ \Gr_1$ exponentiations.
 
-The $i$th \textit{update key} is $\upk_i=g_1^{\alpha^i}$.
-If any vector element $m_j$ changes to $m_j + \delta$, the commitment can be updated in $O(1)$ time as $c' = c \cdot (\upk_j)^{\delta} = c\cdot (g_1^{\alpha^j})^{\delta}$.
+%The $i$th \textit{update key} is $\upk_i=g_1^{\alpha^i}$.
+%If any vector element $m_j$ changes to $m_j + \delta$, the commitment can be updated in $O(1)$ time as $c' = c \cdot (\upk_j)^{\delta} = c\cdot (g_1^{\alpha^j})^{\delta}$.
 
 \parhead{Proofs for a $m_i$.}
 A proof for $m_i$ is obtained by re-committing to $v$ so that $m_i$ ``lands'' at position $N+1$ (i.e., has coefficient $\alpha^{N+1}$) rather than ``landing'' at position $i$ (i.e., has coefficient $\alpha^i$).
@@ -336,16 +345,17 @@ Thus, the proof is:
     &= \left(\frac{g_1^{\sum_{j\in[N]} m_j \alpha^{j}}}{g_1^{m_i \alpha^i}}\right)^{\alpha^{(N+1) - i}}\\
     &= (C / g_1^{m_i \alpha^i})^{\alpha^{(N+1) - i}}
 \end{align}
-The proof is constant-sized and can be computed with $O(N)$ exponentiations.
-It can be verified in $O(1)$ time using $g_2^{\alpha^{(N+1) - i}}$ from \vrk:
+The proof is constant-sized and can be computed with $O(N)\ \Gr_1$ exponentiations.
+Given $g_2^{\alpha^{(N+1) - i}}$ from the verification key \vrk, it can be verified in constant-time using two pairings:
 \begin{align}
     e(C, g_2^{\alpha^{(N+1)-i}}) \stackrel{?}{=} e(\pi_i, g_2) \cdot g_T^{\alpha^{N+1} m_i}
 \end{align}
 
 \parhead{Other features.}
-Updating proofs is not discussed but can be done in $O(1)$ time, if the $i$th update key $\upk_i$ is tweaked to be $O(N)$-sized rather than constant-sized.
+Updating the commitment after position $i$ changes is possible in $O(1)$ time given $g^{\alpha^i}$ as auxiliary information.
+Updating proofs is not discussed but can be done in $O(1)$ time, if given some auxiliary information associated with the changed position $j$ and the proved position $i$.
 In addition to computing proofs $\pi_i$ for a single vector element $m_i$, Pointproofs additionally supports computing constant-sized proofs for a \textit{subvector} $\vect{m}[S]$.
-Importantly, Pointproofs supports aggregating many such $\pi_i, i\in S$ into a subvector proof $\pi_S$ $\vect{m}[S]$, as well as \textit{cross-aggregating} multiple subvector proofs $\hat{\pi}_j$ each for a different subvector $\vect{m}_j[S_j]$ and each with respect to a different commitment $C_j$, into a single proof $\pi$.
+Importantly, Pointproofs supports aggregating individual proofs $\pi_i, i\in S$ into a subvector proof $\pi_S$ for $\vect{m}[S]$, as well as \textit{cross-aggregating} multiple subvector proofs $\hat{\pi}_j$ each for a different subvector $\vect{m}_j[S_j]$ and each with respect to a different commitment $C_j$, into a single proof $\pi$.
 We refer the reader to the original paper for details on subvector proofs and (cross)aggregation~\cite{GRWZ20}.
 
 \parhead{Precomputing all proofs.}
