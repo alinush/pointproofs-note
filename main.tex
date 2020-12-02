@@ -49,7 +49,9 @@
     \vspace{-5em}
 \fi
 \begin{abstract}
-    In this short note, we explain how to reduce the time to compute all $n$ proofs in Gorbunov et al's vector commitment (VC) scheme, known as \textit{Pointproofs}, from $O(n^2)$ time to $O(n\log{n})$.
+    In this short note, we explain how to reduce the time to compute all $N$ proofs in the \textit{Pointproofs} vector commitment (VC) scheme by Gorbunov et al., from $O(N^2)$ time to $O(N\log{N})$.
+    The key ingredient is representing the computation of all proofs as a product between a Toeplitz matrix and the committed vector, which can be computed fast using Discrete Fourier Transforms (DFTs).
+    We quickly prototype our algorithm in C++ and show it is much faster than the naive algorithm for computing all proofs in Pointproofs.
 \end{abstract}
 
 %\ifNotEurocrypt
@@ -64,6 +66,7 @@
 \input{intro}
 \input{prelims}
 \input{constr}
+\input{impl}
 \input{conclusion}
 
 \ifEurocrypt
