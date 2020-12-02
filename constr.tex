@@ -66,7 +66,7 @@ As a result, the vector of proofs $\vect{\pi}$ can be computed using a matrix pr
         m_4
     \end{bmatrix}
 \end{align}
-In other words, we have $\vect{\pi} = \matr{A} \vect{m}^\top$, where $\matr{A}$ is the matrix whose $i$th row is $\vect{a}_i$ and $\vect{\pi}$ is a vector whose $i$th entry is the proof $\pi_i$.
+In other words, we have $\vect{\pi}^\top = \matr{A} \vect{m}^\top$, where $\matr{A}$ is the matrix whose $i$th row is $\vect{a}_i$ and $\vect{\pi}$ is a row vector whose $i$th entry is the proof $\pi_i$.
 \\
 
 \noindent\textit{Key observation:}
@@ -90,5 +90,6 @@ Next, the matrix $\matr{A}$ is just the matrix whose $i$th row is $\vect{a}_i$:
 \end{align}
 And all proofs $\vect{\pi} = [\pi_1,\dots,\pi_N]$ can be computed as:
 \begin{align}
-    \vect{\pi} = \matr{A} \vect{m}^\top
+    \vect{\pi}^\top = \matr{A} \vect{m}^\top
 \end{align}
+Again, using the techniques from \cref{s:toeplitz:multiply-vec}, this can be done in $O(N\log{N})$ time.

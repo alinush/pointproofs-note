@@ -5,13 +5,154 @@ Let $\Gr_1, \Gr_2, \Gr_T$ denote groups of prime order $p$.
 Let $[N] = \{1,2,\dots, N\}$.
 Let $\vect{m}=[m_1, m_2, \dots, m_N]$ be a vector of elements, indexed from 1 to $N$.
 Let $\vect{m}^\top$ denote its transpose: a column vector whose $i$th entry is $m_i$.
+Let $\diag(\vect{m})$ denote the $N\times N$ diagonal matrix whose entry at position $(i,i)$ is $m_i$ and all other entries are 0.
+Also, $\diag(\vect{m})=\diag(\vect{m}^\top)$.
 Let $\vect{m}[S] = (m_i)_{i \in S}$ be a \textit{subvector} of $\vect{m}$ consisting only of the positions $i\in S$.
 
 \subsection{Discrete Fourier Transform (DFT) on group elements}
 \label{s:dft}
 
-\subsection{Multiplying a Toeplitz matrix by a vector}
+Let $\omega_N$ denote a primitive $N$th root of unity in the finite field $\Zp$.
+The \textit{Discrete Fourier Transform (DFT)} of a vector $\vect{x} = [x_1,\dots,x_N]^\top \in \Gr_1^N$ is defined as:
+\begin{align}
+    \dft(\vect{x}) &= \vect{\hat{x}} = [\hat{x}_1, \dots, \hat{x}_N]^\top\in \Gr_1^N,\ \text{where}\ \hat{x}_i= \prod_{j\in [N]} (x_j)^{(\omega_N)^{(i-1)(j-1)}},\forall i\in[N]
+\end{align}
+Importantly, the DFT can be computed in $O(N\log{N})$ time~\cite{CLRS09}.
+Furthermore, it is invertible.
+As we discuss next, one can define $\invdft(\cdot)$ such that $\invdft(\dft(\vect{x})) = \dft(\invdft(\vect{x})) = \vect{x}$.
+%where:
+%\begin{align}
+%
+%\end{align}
+
+\subsubsection{The DFT matrix}
+\label{s:dft:matrix}
+%Suppose $\vect{x}$ is a size-$N$ row vector.
+%Then,
+$\dft(\vect{x})$ can also be computed as a matrix product as follows:
+\begin{align}
+    \dft(\vect{x}) = \matr{W}_N \vect{x}
+\end{align}
+Here, $\matr{W}_N$ is known as the \textit{DFT matrix}:
+\begin{align}
+    \matr{W}_N&=
+    \begin{bmatrix}
+        1&1&1&1&\cdots &1\\1&(\omega_N)^1&(\omega_N)^{2}&(\omega_N)^{3}&\cdots &(\omega_N)^{N-1}\\
+        1&(\omega_N)^{2}&(\omega_N)^{4}&(\omega_N)^{6}&\cdots &(\omega_N)^{2(N-1)}\\
+        1&(\omega_N)^{3}&(\omega_N)^{6}&(\omega_N)^{9}&\cdots &(\omega_N)^{3(N-1)}\\
+        \vdots &\vdots &\vdots &\vdots &\ddots &\vdots \\
+        1&(\omega_N)^{N-1}&(\omega_N)^{2(N-1)}&(\omega_N)^{3(N-1)}&\cdots &(\omega_N)^{(N-1)(N-1)}
+    \end{bmatrix}
+\end{align}
+This makes it very easy to define the \textit{inverse DFT} of a size-$N$ column vector $\vect{y}$ as:
+\begin{align}
+    \invdft(\vect{y}) &= (\matr{W}_N)^{-1} \vect{y}\\
+        &= \frac{1}{N} \matr{W}_N \vect{y}
+\end{align}
+Note that the inverse of the DFT matrix $\matr{W}_N$ is simply $\frac{1}{N} \matr{W}_N$.
+Thus, an inverse DFT can be reduced to computing a normal DFT and scaling it by $1/N$.
+
+%\parhead{An example.}
+%The DFT matrix for $N=4$ is:
+%\begin{align}
+%\matr{W}_4=\begin{bmatrix}
+%    1 & 1     & 1     & 1 \\\\\
+%    1 & (\omega)^1  & (\omega)^2  & (\omega)^3 \\\\\
+%    1 & (\omega^2)^1 & (\omega^2)^2 & (\omega^2)^3 \\\\\
+%    1 & (\omega^3)^1 & (\omega^3)^2 & (\omega^3)^3
+%\end{bmatrix}
+%\end{align}
+%Here, $\omega$ is a primitive 4th root of unity.
+
+\subsection{Circulant matrices}
+\label{s:circulant}
+
+A \textit{circulant matrix} of size $N\times N$ is a matrix of the following form:
+\begin{align}
+    \matr{C}_N&=\begin{bmatrix}
+        c_{0}   & c_{N-1} & c_{N-2} & \cdots & \cdots  & c_{1}\\
+        c_{1}   & c_{0}   & c_{N-1} & \ddots &         & \vdots\\
+        c_{2}   & c_{1}   & \ddots  & \ddots & \ddots  & \vdots\\
+        \vdots  & \ddots  & \ddots  & \ddots & c_{N-1} & c_{N-2}\\
+        \vdots  &         & \ddots  & c_{1}  & c_{0}   & c_{N-1}\\
+        c_{N-1} & \cdots  & \cdots  & c_{2}  & c_{1}   & c_{0}
+    \end{bmatrix}
+\end{align}
+
+In other words, as you go from left to right, each column is set to the previous column but ``rotated down'' by one.
+(Looked at differently, each row is set to the row above it ``rotated to the right'' by one.)
+
+\parhead{Vector representation.}
+Note that $\matr{C}_N$ is uniquely determined by its first column, which we denote by $\vect{c}_N = [c_0, c_1, c_2, \dots c_{N-1}]^\top$.
+
+\parhead{An example.}
+The following matrix is a circulant matrix:
+\begin{align}
+    \begin{bmatrix}
+        \textbf{7}    & \g{3}        & \myyellow{8} & \underline{1}\\
+        \g{3}         & \textbf{7}   & \g{3}        & \myyellow{8}\\
+        \myyellow{8}  & \g{3}        & \textbf{7}   & \g{3}\\
+        \underline{1} & \myyellow{8} & \g{3}        & \textbf{7}
+    \end{bmatrix}
+\end{align}
+
+%\subsubsection{Diagonalization using the DFT matrix}
+\subsubsection{Multiplying a circulant matrix by a vector}
+\label{s:circulant:diag-dft}
+\label{s:circulant:multiply-vec}
+It is well-known that one can \textit{diagonalize}~\cite{Diag20} any circulant matrix $\matr{C}_N$ with vector representation $\vect{c}_N$ as:
+\begin{align}
+    \matr{C}_N &= (\matr{W}_N)^{-1} \diag(\matr{W}_N \vect{c}_N) \matr{W}_N\\
+               &= (\matr{W}_N)^{-1} \diag(\dft(\vect{c}_N)) \matr{W}_N
+\end{align}
+Let $m=[m_1,\dots,m_N]^\top$ be a vector.
+Let $\vect{x}\circ\vect{y} = [x_1 y_1, x_2 y_2,\dots, x_N y_N]^\top$ denote the Hadamard product of two column vectors.
+It is also well-known that the above diagonalization can be leveraged to efficiently compute matrix-vector products $\matr{C}_N\vect{m}$ as:
+\begin{align}
+    \matr{C}_N \vect{m}
+        &= ((\matr{W}_N)^{-1} \diag(\dft(\vect{c}_N)) \matr{W}_N)\vect{m}\\
+        &= (\matr{W}_N)^{-1} \diag(\dft(\vect{c}_N)) (\matr{W}_N\vect{m})\\
+        &= ((\matr{W}_N)^{-1} \diag(\dft(\vect{c}_N))) \dft(\vect{m})\\
+        &= (\matr{W}_N)^{-1} (\dft(\vect{c}_N)\circ \dft(\vect{m}))\\
+        &= \invdft(\dft(\vect{c}_N)\circ \dft(\vect{m}))
+\end{align}
+In other words, such products by circulant matrices reduce to computing two DFTs and one inverse DFT.
+Overall, this takes $O(N\log{N})$ time.
+
+\subsection{Toeplitz matrices}
 \label{s:toeplitz}
+
+A \textit{Toeplitz matrix} or \textit{diagonal-constant matrix} of size $N\times N$ is a matrix of the following form:
+\begin{align}
+\matr{A}_N&=\begin{bmatrix}
+    a_{0}   & a_{-1} & a_{-2} & \cdots & \cdots & a_{-(N-1)}\\
+    a_{1}   & a_{0}  & a_{-1} & \ddots &        & \vdots\\
+    a_{2}   & a_{1}  & \ddots & \ddots & \ddots & \vdots\\
+    \vdots  & \ddots & \ddots & \ddots & a_{-1} & a_{-2}\\
+    \vdots  &        & \ddots & a_{1}  & a_{0}  & a_{-1}\\
+    a_{N-1} & \cdots & \cdots & a_{2}  & a_{1}  & a_{0}
+\end{bmatrix}
+\end{align}
+In other words, all of $\matr{A}_N$'s descending diagonals (from left to right) have the same entries.
+To simplify notation, we are slightly abusing notation here and using negative indices for the entries of the matrix.
+Note that a circulant matrix (see \cref{s:circulant}) is a special kind of Toeplitz matrix with $a_{-i} = a_{N-i},\forall i\in [N - 1]$.
+
+\parhead{An example.}
+The following matrix is a Toeplitz matrix:
+\begin{align}
+\begin{bmatrix}
+    \textbf{7}    & \N{11}       & \myblue{5} & \textit{6}\\
+    \g{3}         & \textbf{7}   & \N{11}     & \myblue{5}\\
+    \myyellow{8}  & \g{3}        & \textbf{7} & \N{11}\\
+    \underline{1} & \myyellow{8} & \g{3}      & \textbf{7}
+\end{bmatrix}
+\end{align}
+
+\subsubsection{Multiplying a Toeplitz matrix by a vector}
+\label{s:toeplitz:multiply-vec}
+Computing $\vect{y} = \matr{A}_N \cdot \vect{m}$ for any vector $m = [m_1,\dots, m_N]^\top$ can be done in $O(N\log{N})$ time, if $\matr{A}_N$ is a Toeplitz matrix.
+The idea is to embed $\matr{A}_N$ inside a slightly bigger circulant matrix (see \cref{s:circulant}) in such a way that multiplying this circulant matrix by (an extension of) $\vect{m}$ can be used to compute $\matr{A}_N \cdot \vect{m}$.
+Specifically, note that:
 
 \subsection{Pointproofs}
 \label{s:pointproofs}
