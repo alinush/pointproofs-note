@@ -1,4 +1,9 @@
 %
+% Construction-specific
+%
+\newcommand{\Grid}{\ensuremath{\myyellow{g_1^{0}}}}
+
+%
 % Colors
 %
 %Blue: #268bd2
@@ -39,6 +44,7 @@
 \newcommand{\bezout}{B\'ezout\xspace}
 \newcommand{\Gr}{\ensuremath{\mathbb{G}}\xspace}
 \newcommand{\Z}{\ensuremath{\mathbb{Z}}\xspace}
+\newcommand{\F}{\ensuremath{\mathbb{F}}\xspace}
 \newcommand{\Zp}{\ensuremath{\Z_p}\xspace}
 \newcommand{\lagr}{\ensuremath{\mathcal{L}}\xspace}
 \newcommand{\Oh}{\ensuremath{\mathcal{O}}}  % for Big-Oh notation
@@ -48,7 +54,11 @@
 \newcommand{\matr}[1]{\ensuremath{\mathbf{#1}}}
 \newcommand{\diag}{\ensuremath{\mathsf{diag}}}
 \newcommand{\dft}{\ensuremath{\mathsf{DFT}}}
-\newcommand{\invdft}{\ensuremath{\mathsf{DFT}^{-1}}}
+\newcommand{\dftG}{\ensuremath{\dft_{\Gr}}}
+\newcommand{\dftF}{\ensuremath{\dft_{\F}}}
+\newcommand{\invdft}{\ensuremath{\dft^{-1}}}
+\newcommand{\invdftG}{\ensuremath{\dftG^{-1}}}
+\newcommand{\invdftF}{\ensuremath{\dftF^{-1}}}
 
 % For adding "--- a_i ---" lines to a matrix A whose rows are a_i's
 % e.g., \begin{bmatrix} \llongdash a_i \rlongdash\end{bmatrix}

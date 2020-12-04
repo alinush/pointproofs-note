@@ -9,3 +9,38 @@ Unfortunately, the fastest way to compute all $N$ proofs in the Pointproofs VC i
 In this short paper, we give a faster $O(N\log{N})$ time algorithm.
 We implement our algorithm and observe it outperforms the naive one very quickly (see \cref{f:benchmarks}).
 We also observe that our $O(N\log{N})$-time proof precomputation for Pointproofs is slightly faster than the $O(N\log{N})$-time proof precomputation in VCs based on Kate-Zaverucha-Goldberg (KZG) polynomial commitments~\cite{KZG10,FK20,TAB+20}.
+
+\parhead{Overview.}
+The Pointproofs VC uses public parameters of the form $\left(g_1^{\alpha^i})\right)_{\in[2N]\setminus \{N+1\}}$ (see \cref{s:pointproofs}).
+We observe that all proofs $\vect{\pi} = [\pi_1,\dots,\pi_N]^\top$ for a vector $\vect{m}=[m_1,\dots,m_N]^\top$ can be computed as a matrix-vector product:
+\begin{align}
+    \vect{\pi} = \begin{bmatrix}
+        \llongdash & \vect{a_1} & \rlongdash\\
+        \llongdash & \vect{a_2} & \rlongdash\\
+        & \vdots & \\
+        \llongdash & \vect{a_N} & \rlongdash
+    \end{bmatrix} \vect{m} \stackrel{\mathsf{def}}{=}  \matr{A} \vect{m}
+\end{align}
+Here, the rows $\vect{a}_i$ of the matrix $\matr{A}$ are defined carefully based on the proof $\pi_i$ being verified (see intuition in \cref{s:pointproofs:precompute-all-proofs})
+\begin{align}
+    \vect{a}_i &= \left[g_1^{\alpha^{1+(N+1)-i}}, g_1^{\alpha^{2+(N+1)-i}}, \dots, g_1^{\alpha^{(i-1)+(N+1)-i}}, \Grid, g_1^{\alpha^{(i+1)+(N+1)-i}}, \dots, g_1^{\alpha^{N+(N+1)-i}}\right]
+\end{align}
+To compute this $\matr{A} \vect{m}$ product fast, we notice the matrix $\matr{A}$ is a \textit{Toeplitz matrix} (see \cref{s:toeplitz}).
+This means the product can be computed in $O(N\log{N})$ time by embedding $\matr{A}$ inside a \textit{circulant matrix} (see \cref{s:circulant}).
+Specifically, we use the entries of $\matr{A}$ to define a circulant matrix $\matr{C}_{2N}$, which is unambiguously represented by the vector:
+\begin{align}
+    \vect{c}_{2N}
+    &= [
+    \Grid, g_1^{\alpha^N}, g_1^{\alpha^{N-1}},\dots, g_1^{\alpha^2},
+    \Grid,
+    g_1^{\alpha^{2N}},
+    \cdots,
+    g_1^{\alpha^{N+3}},
+    g_1^{\alpha^{N+2}}
+    ]^\top
+\end{align}
+This allows us to compute $\vect{\pi} = \matr{A} \vect{m}$ by computing $\vect{\pi'} = \matr{C}_{2N}\vect{m'}$ (see \cref{s:toeplitz:multiply-vec}), where $\vect{m'}$ is  $\vect{m}$ extended with $N$ zeros.
+Specifically, $\vect{\pi}$ is the first $N$ entries of $\vect{\pi}'$, which can be computed in $O(N\log{N})$ as explained in \cref{s:circulant:multiply-vec}:
+\begin{align}
+    \vect{\pi'} = \invdftG(\dftG(\vect{c}_{2N})\circ\dftF(\vect{m'}))
+\end{align}

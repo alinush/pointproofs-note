@@ -1,5 +1,3 @@
-\newcommand{\Grid}{\ensuremath{\myyellow{g_1^{0}}}}
-
 \section{Computing all Pointproofs}
 \label{s:pointproofs:precompute-all-proofs}
 
@@ -78,7 +76,7 @@ As a result, all proofs can be computed in $O(N\log{N})$ time, which is much fas
 Recall that the proof $\pi_i$ is just a commitment to the vector, but ``shifted'' by $(N+1)-i$ to the right.
 Looking at $m_j$'s coefficients in \cref{eq:indiv-proof-prod}, we can define $\vect{a}_i$ as:
 \begin{align}
-    \vect{a}_i &= \left[g_1^{1+(N+1)-i}, g_1^{2+(N+1)-i}, \dots, g_1^{(i-1)+(N+1)-i}, \Grid, g_1^{(i+1)+(N+1)-i}, \dots, g_1^{N+(N+1)-i}\right]
+    \vect{a}_i &= \left[g_1^{\alpha^{1+(N+1)-i}}, g_1^{\alpha^{2+(N+1)-i}}, \dots, g_1^{\alpha^{(i-1)+(N+1)-i}}, \Grid, g_1^{\alpha^{(i+1)+(N+1)-i}}, \dots, g_1^{\alpha^{N+(N+1)-i}}\right]
 \end{align}
 Next, the matrix $\matr{A}$ is just the matrix whose $i$th row is $\vect{a}_i$:
 \begin{align}
@@ -97,8 +95,8 @@ Using the techniques from \cref{s:toeplitz:multiply-vec}, this can be done in $O
 The key step is constructing a circulant matrix $\matr{C}_{2N}$ that contains $\matr{A}$.
 First, $\matr{A}$ is defined by its first column, denoted by $\vect{c}_1$, and first row, denoted by $\vect{a}_1$:
 \begin{align}
-    \vect{c}_1 &= [\Grid, g_1^N, g_1^{N-1},\dots, g_1^2]^\top\\
-    \vect{a}_1 &= [\Grid, g_1^{N+2}, g_1^{N+3},\dots, g_1^{2N}]
+    \vect{c}_1 &= [\Grid, g_1^{\alpha^N}, g_1^{\alpha^{N-1}},\dots, g_1^{\alpha^{2}}]^\top\\
+    \vect{a}_1 &= [\Grid, g_1^{\alpha^{N+2}}, g_1^{\alpha^{N+3}},\dots, g_1^{\alpha^{2N}}]
 \end{align}
 As explained in \cref{s:toeplitz:multiply-vec}, the circulant matrix $\matr{C}_{2N}$ will have vector representation:
 \begin{align}
@@ -106,22 +104,22 @@ As explained in \cref{s:toeplitz:multiply-vec}, the circulant matrix $\matr{C}_{
     &= [
         \vect{c_1},
         \Grid,
-        g_1^{2N},
+        g_1^{\alpha^{2N}},
         \cdots,
-        g_1^{N+3},
-        g_1^{N+2}
+        g_1^{\alpha^{N+3}},
+        g_1^{\alpha^{N+2}}
     ]^\top\\
     &= [
-        \Grid, g_1^N, g_1^{N-1},\dots, g_1^2,
+        \Grid, g_1^{\alpha^N}, g_1^{\alpha^{N-1}},\dots, g_1^{\alpha^2},
         \Grid,
-        g_1^{2N},
+        g_1^{\alpha^{2N}},
         \cdots,
-        g_1^{N+3},
-        g_1^{N+2}
-    ]^\top\\
+        g_1^{\alpha^{N+3}},
+        g_1^{\alpha^{N+2}}
+    ]^\top
 \end{align}
 Let $\vect{m'} = [\vect{m}, \vect{0}_N ]^\top$ be a size-$2N$ vector that extends $\vect{m}$ with $N$ zeros.
 Then, $\vect{\pi}$ can be computed as the first $N$ entries of $\vect{\pi}'$, which will be of size $2N$:
 \begin{align}
-    \vect{\pi'} = \invdft(\dft(\vect{c}_{2N})\circ\dft(\vect{m'}))
+    \vect{\pi'} = \invdftG(\dftG(\vect{c}_{2N})\circ\dftF(\vect{m'}))
 \end{align}

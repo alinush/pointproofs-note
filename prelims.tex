@@ -1,7 +1,8 @@
 \section{Preliminaries}
 
 \parhead{Notation.}
-Let $\Gr_1, \Gr_2, \Gr_T$ denote groups of prime order $p$.
+Let $\Gr_1, \Gr_2, \Gr_T$ denote groups of prime order $p$ (using multiplicative notation).
+Let $\F$ denote a field of order $p$ (in this work, we use $\Zp$).
 Let $e : \Gr_1 \times \Gr_2\rightarrow \Gr_T$~\cite{GPS08} be a Type III pairing (i.e., $\Gr_1\ne \Gr_2$ and there is no efficiently computable homomorphisms between $\Gr_1$ and $\Gr_2$).
 Let $[N] = \{1,2,\dots, N\}$.
 Let $\vect{m}=[m_1, m_2, \dots, m_N]$ be a vector of elements, indexed from 1 to $N$.
@@ -11,20 +12,25 @@ Let $\diag(\vect{m})$ denote the $N\times N$ diagonal matrix whose entry at posi
 Also, $\diag(\vect{m})=\diag(\vect{m}^\top)$.
 Let $\vect{m}[S] = (m_i)_{i \in S}$ be a \textit{subvector} of $\vect{m}$ consisting only of the positions $i\in S$.
 
-\subsection{Discrete Fourier Transform (DFT) on group elements}
+\subsection{Discrete Fourier Transform (DFT)}
 \label{s:dft}
 
 Let $\omega_N$ denote a primitive $N$th root of unity in the finite field $\Zp$.
-The \textit{Discrete Fourier Transform (DFT)} of a vector $\vect{x} = [x_1,\dots,x_N]^\top \in \Gr_1^N$ is defined as:
+The \textit{Discrete Fourier Transform (DFT)} of a vector $\vect{x} = [x_1,\dots,x_N]^\top \in \Gr_1^N$ \textbf{of group elements} is defined as:
 \begin{align}
-    \dft(\vect{x}) &= \vect{\hat{x}} = [\hat{x}_1, \dots, \hat{x}_N]^\top\in \Gr_1^N,\ \text{where}\ \hat{x}_i= \prod_{j\in [N]} (x_j)^{(\omega_N)^{(i-1)(j-1)}},\forall i\in[N]
+    \dftG(\vect{x}) &= \vect{\hat{x}} = [\hat{x}_1, \dots, \hat{x}_N]^\top\in \Gr_1^N,\ \text{where}\ \hat{x}_i= \prod_{j\in [N]} (x_j)^{(\omega_N)^{(i-1)(j-1)}},\forall i\in[N]
 \end{align}
 Importantly, the DFT can be computed in $O(N\log{N})$ time~\cite{CLRS09}.
-Furthermore, it is invertible: one can define $\invdft(\cdot)$ such that $\invdft(\dft(\vect{x})) = \dft(\invdft(\vect{x})) = \vect{x}$.
-%where:
-%\begin{align}
-%
-%\end{align}
+Furthermore, it is invertible: one can define $\invdftG(\cdot)$ such that $\invdftG(\dftG(\vect{x})) = \dftG(\invdftG(\vect{x})) = \vect{x}$.
+\\
+
+\noindent Similarly, one can also define the DFT for a vector $\vect{m}=[m_1,\dots,m_N]\in \F^N$ \textbf{of field elements}:
+\begin{align}
+    \dftF(\vect{m}) &= \vect{\hat{m}} = [\hat{m}_1, \dots, \hat{m}_N]^\top\in \F^N,\ \text{where}\ \hat{m}_i= \prod_{j\in [N]} m_j (\omega_N)^{(i-1)(j-1)},\forall i\in[N]
+\end{align}
+
+\noindent Either way, we can generally define $\dft(\vect{x})$, whether $x\in\Gr_1^N$ or $x\in \F^N$, by abstracting out $\Gr_1$'s operation and $\F$'s multiplication operation.
+Henceforth, we use $\dft(\vect{x})$ abstractly and clarify, where necessary, whether we need a $\dftG$ or a $\dftF$.
 
 \subsubsection{The DFT matrix}
 \label{s:dft:matrix}
@@ -121,12 +127,6 @@ It is also well-known that the above diagonalization can be leveraged to efficie
 \end{align}
 In other words, such products by circulant matrices reduce to computing two DFTs and one inverse DFT.
 Overall, this takes $O(N\log{N})$ time.
-\\
-
-\noindent\textit{Observation:} The DFT on $\vect{m}$ is a DFT on field elements, rather than group elements:
-\begin{align}
-    \dft(\vect{m}) &= \vect{\hat{m}} = [\hat{m}_1, \dots, \hat{m}_N]^\top\in \Zp,\ \text{where}\ \hat{m}_i= \prod_{j\in [N]} m_j (\omega_N)^{(i-1)(j-1)},\forall i\in[N]
-\end{align}
 
 \subsection{Toeplitz matrices}
 \label{s:toeplitz}
